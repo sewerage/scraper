@@ -3,7 +3,7 @@
 {
 	"name": "Python 3.8 with libtorrent",
 
-	"image": "ghcr.io/sewerage/scraper/devcontainer:latest"
+	"image": "ghcr.io/sewerage/scraper/devcontainer:latest",
 
 	// "build": {
 	// 	"dockerfile": "Dockerfile"
@@ -16,7 +16,7 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "pip3 install --user -r requirements.txt",
+	"postCreateCommand": "pip install --user -r requirements.txt",
 
 	// Configure tool-specific properties.
 	// "customizations": {},

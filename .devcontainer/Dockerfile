@@ -25,3 +25,7 @@ RUN cd /usr/local/src/libtorrent-rasterbar-2.0.9 && \
 
 RUN cd /usr/local/src/libtorrent-rasterbar-2.0.9 && \
     python3.11 setup.py install
+
+# install other requirements
+
+RUN apt install -y zstd
