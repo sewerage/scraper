@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gzip File Decompression</title>
+  <script src="https://cdn.jsdelivr.net/npm/pako@2.0.3/dist/pako.min.js"></script>
+  <style>
+    #progress {
+      width: 100%;
+      background-color: #ddd;
+    }
+
+    #bar {
+      width: 0;
+      height: 30px;
+      background-color: #4caf50;
+      text-align: center;
+      line-height: 30px;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+
+  <button onclick="downloadAndDisplay()">Download and Display</button>
+  <div id="progress">
+    <div id="bar">0%</div>
+  </div>
+  <pre id="output"></pre>
+
+  <script>
+    function downloadAndDisplay() {
+      // URL of the gzip file
+      var fileUrl = 'https://raw.githubusercontent.com/sewerage/submissions/main/RS_2019-06_chs.ndjson.gz';
+      // Create a new XMLHttpRequest object
+      var xhr = new XMLHttpRequest();
+
+      // Set up a callback function to handle the response
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          // Response is successful, get the compressed data
+          var compressedData = xhr.response;
+
+          // Use pako library to decompress the data
+          var inflatedData = pako.inflate(compressedData, { to: 'string' });
+
+          // Display the decompressed data in the HTML element with id 'output'
+          document.getElementById('output').textContent = inflatedData;
+        } else {
+          // Handle the error
+          console.error('Failed to download the file. Status code: ' + xhr.status);
+        }
+      };
+
+      // Set up progress tracking
+      xhr.onprogress = function (event) {
+        if (event.lengthComputable) {
+          var percentComplete = (event.loaded / event.total) * 100;
+          document.getElementById('bar').style.width = percentComplete + '%';
+          document.getElementById('bar').innerHTML = percentComplete.toFixed(2) + '%';
+        }
+      };
+
+      // Set up the request as a GET to the specified URL
+      xhr.open('GET', fileUrl, true);
+
+      // Set the responseType to 'arraybuffer' to handle binary data
+      xhr.responseType = 'arraybuffer';
+
+      // Send the request
+      xhr.send();
+    }
+  </script>
+
+  <!-- Include the pako library for gzip decompression -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.0.3/pako.min.js"></script>
+
+</body>
+
+</html>

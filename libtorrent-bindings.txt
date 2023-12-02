@@ -1,0 +1,15 @@
+Libtorrent Bindings
+
+Python version: python 3.8
+Build commands:
+
+    sudo apt-get -y install python3.8-dev
+    sudo apt-get -y install build-essential
+    sudo apt-get -y install libboost-all-dev 
+    sudo apt-get -y install libssl-dev
+    wget https://github.com/arvidn/libtorrent/releases/download/v2.0.9/libtorrent-rasterbar-2.0.9.tar.gz
+    tar -zxvf libtorrent-rasterbar-2.0.9.tar.gz 
+    cd libtorrent-rasterbar-2.0.9/
+    python3.8 setup.py build 
+
+
