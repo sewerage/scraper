@@ -1,23 +1,28 @@
-"""
-This class allows to read a zstd compressed file line by line.
-"""
-
 import zstandard as zstd
 
 class ZstdReader:
-    def __init__(self, file_path):
-        self.file_path = file_path
+    def __init__(self, filePath : str) -> None:
+        self.filePath = filePath
         self.file = None
-        self.dctx = zstd.ZstdDecompressor()
+        self.decompressor = zstd.ZstdDecompressor()
         self.reader = None
         self.buffer = b""
 
+        self.linecount = 0 
+
+    def status(self):
+        return {
+            "filePath": self.filePath,
+            "bufferSize": len(self.buffer),
+            "linecount": self.linecount
+        }  
+
     def __enter__(self):
-        self.file = open(self.file_path, 'rb')
-        self.reader = self.dctx.stream_reader(self.file)
+        self.file = open(self.filePath, 'rb')
+        self.reader = self.decompressor.stream_reader(self.file)
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, excType, excVal, excTb):
         if self.file:
             self.file.close()
         self.file = None
@@ -26,12 +31,13 @@ class ZstdReader:
     def __iter__(self):
         return self
 
-    def __next__(self):
+    def __next__(self) -> str:
+        self.linecount += 1
         while True:
             if b'\n' in self.buffer:
-                line_end = self.buffer.index(b'\n') + 1
-                line = self.buffer[:line_end]
-                self.buffer = self.buffer[line_end:]
+                lineEnd = self.buffer.index(b'\n') + 1
+                line = self.buffer[:lineEnd]
+                self.buffer = self.buffer[lineEnd:]
                 return line.decode()
 
             chunk = self.reader.read(4096)
@@ -44,10 +50,11 @@ class ZstdReader:
                     raise StopIteration
 
             self.buffer += chunk
+
 # Usage
 if __name__ == "__main__":
-    zst_file_path = '/tmp/RS_2023-09.zst'
-    with ZstdReader(zst_file_path) as reader:
+    zstFilePath = 'RS_2023-09.zst'
+    with ZstdReader(zstFilePath) as reader:
         idx = 0
         for line in reader:
             if idx > 10:
