@@ -15,9 +15,10 @@ class Exporter:
 
     def export(self) -> None:
         # first write into memory 
-        ndjsonFile = io.BytesIO():
-            for line in self.data:
-                ndjsonFile.write(json.dumps(line).encode("utf-8") + b"\n")
+        ndjsonFile = io.BytesIO()
+        for line in self.data:
+            ndjsonFile.write(json.dumps(line).encode("utf-8") + b"\n")
+        ndjsonFile.seek(0)
 
         # then compress it 
         with open(self.outputPath, "wb") as gzFile:
@@ -26,5 +27,5 @@ class Exporter:
 
 if __name__ == "__main__":
     data = [{"name": "John", "age": 30}, {"name": "Jane", "age": 25}]
-    exporter = Exporter(data, "output.gz")
+    exporter = Exporter(data, "output.ndjson.gz")
     exporter.export()
